@@ -37,7 +37,6 @@ public class RNA implements Comparable<RNA>{
     
     public void setNeuronas(int neuronas){
         if (neuronas >= 3 && neuronas <= 18)
-            //rna &= (((neuronas - 3 & 0b1111) << 9) ^ RNA_MASK ^ N_MASK);
             rna &= (((neuronas - 3 << 9 ) & N_MASK) ^ RNA_MASK ^ N_MASK);
     }
 
@@ -65,5 +64,31 @@ public class RNA implements Comparable<RNA>{
     @Override
     public int compareTo(RNA o) {
         return Double.compare(r, o.getResultado());
-    }  
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + this.rna;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        final RNA other = (RNA) obj;
+        if (this.rna != other.rna) {
+            return false;
+        }
+        return true;
+    }
 }
