@@ -53,12 +53,34 @@ public class RNA implements Comparable<RNA>{
         return ((rna & E_MASK) >> 4) * 250 + 500;
     }
     
+    /** El parametro num tiene que estar en el rango de 0 - 7
+       El número del numero de épocas sera el 500 + (250 * num) */
+    public void setEpocas(int num){
+        if (num >= 0 && num <= 7)
+            rna &= (((num << 4 ) & E_MASK) ^ RNA_MASK ^ E_MASK);
+    }
+    
+   
     public double getLearningRate(){
         return ((rna & LR_MASK) >> 2) * 0.5 + 2.0;
     }
     
+    /** El parametro num tiene que estar en el rango de 0 - 3
+       El valor del Learning Rate sera 2.0 + (0.5 * num) */
+    public void setLearningRate(int num){
+        if (num >= 0 && num <= 3)
+            rna &= (((num << 2 ) & LR_MASK) ^ RNA_MASK ^ LR_MASK);
+    }
+
     public double getMomentum(){
         return (rna & M_MASK) * 0.5 + 2.0;
+    }
+    
+    /** El parametro num tiene que estar en el rango de 0 - 3
+       El valor del Momentum sera 2.0 + (0.5 * num) */
+    public void setMomentum(int num){
+        if (num >= 0 && num <= 3)
+            rna &= (((num << 2 ) & M_MASK) ^ RNA_MASK ^ M_MASK);
     }
     
     @Override
