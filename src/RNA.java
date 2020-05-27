@@ -34,9 +34,20 @@ public class RNA implements Comparable<RNA>{
     public int getNeuronas(){
         return ((rna & N_MASK) >> 9) + 3;
     }
+    
+    public void setNeuronas(int neuronas){
+        if (neuronas >= 3 && neuronas <= 18)
+            //rna &= (((neuronas - 3 & 0b1111) << 9) ^ RNA_MASK ^ N_MASK);
+            rna &= (((neuronas - 3 << 9 ) & N_MASK) ^ RNA_MASK ^ N_MASK);
+    }
 
     public int getCapas(){
         return ((rna & C_MASK) >> 7) + 1;
+    }
+    
+    public void setCapas(int capas){
+        if (capas >= 1 && capas <= 4)
+            rna &= (((capas - 1 << 7 ) & C_MASK) ^ RNA_MASK ^ C_MASK);
     }
     
     public int getEpocas(){
