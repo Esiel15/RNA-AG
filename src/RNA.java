@@ -80,7 +80,7 @@ public class RNA implements Comparable<RNA>{
        El valor del Momentum sera 2.0 + (0.5 * num) */
     public void setMomentum(int num){
         if (num >= 0 && num <= 3)
-            rna &= (((num << 2 ) & M_MASK) ^ RNA_MASK ^ M_MASK);
+            rna &= ((num & M_MASK) ^ RNA_MASK ^ M_MASK);
     }
     
     @Override
