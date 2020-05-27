@@ -4,11 +4,14 @@ public class RNA implements Comparable<RNA>{
     public static final int E_MASK = 0b0000001110000;
     public static final int LR_MASK = 0b0000000001100;
     public static final int M_MASK = 0b0000000000011;
+    
+    public static final int RNA_MASK = 0b1111111111111;
+    
     private int rna;
     private double r;
 
     public RNA(int rna){
-        this.rna = rna;
+        this.rna = rna & RNA_MASK;
         r = 0;
     }
     
@@ -31,7 +34,7 @@ public class RNA implements Comparable<RNA>{
     public int getNeuronas(){
         return rna & N_MASK;
     }
-    
+
     public int getCapas(){
         return rna & C_MASK;
     }
@@ -51,8 +54,5 @@ public class RNA implements Comparable<RNA>{
     @Override
     public int compareTo(RNA o) {
         return Double.compare(r, o.getResultado());
-    }
-    
-    
-    
+    }  
 }
