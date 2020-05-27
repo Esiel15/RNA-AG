@@ -68,7 +68,7 @@ public class RNA_AG {
                 hl.append(",").append(n);
             
             mlp.setHiddenLayers(hl.toString());
-            mlp.setTrainingTime(ind.getEpocas());;
+            mlp.setTrainingTime(ind.getEpocas());
             mlp.setLearningRate(ind.getLearningRate());
             mlp.setMomentum(ind.getMomentum());
             
