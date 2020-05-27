@@ -32,23 +32,23 @@ public class RNA implements Comparable<RNA>{
     }
     
     public int getNeuronas(){
-        return rna & N_MASK;
+        return ((rna & N_MASK) >> 9) + 3;
     }
 
     public int getCapas(){
-        return rna & C_MASK;
+        return ((rna & C_MASK) >> 7) + 1;
     }
     
     public int getEpocas(){
-        return rna & E_MASK;
+        return ((rna & E_MASK) >> 4) * 250 + 500;
     }
     
-    public int getLearningRate(){
-        return rna & LR_MASK;
+    public double getLearningRate(){
+        return ((rna & LR_MASK) >> 2) * 0.5 + 2.0;
     }
     
-    public int getMomentum(){
-        return rna & M_MASK;
+    public double getMomentum(){
+        return (rna & M_MASK) * 0.5 + 2.0;
     }
     
     @Override
