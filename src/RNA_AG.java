@@ -1,4 +1,6 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -23,16 +25,6 @@ public class RNA_AG {
     private static final int crossValidation = 10;
     private static final int pobl = 20;
     
-    /*
-    private Instances instances;
-    private Evaluation evaluation;
-    
-    public RNA_AG(Instances instances) throws Exception{
-        this.instances = instances;
-        evaluation = new Evaluation(instances);
-    }
-    */
-    
     /**
      * Carga las instancias del documento .arff
      * @param path
@@ -46,8 +38,28 @@ public class RNA_AG {
         return data;
     }
     
-    private static void guardarEvaluacion(Evaluation evaluation, RNA rna){
+    private static void guardarEvaluacion(Evaluation evaluation, RNA rna, int gen) throws IOException, Exception{
+        //Guarda la información de la evaluacion de manera legible
+        File file = new File("resultados_gen" + gen + ".txt");
+        FileWriter fw = new FileWriter(file, true);
+        PrintWriter w = new PrintWriter(new BufferedWriter(fw));
         
+        if (!file.exists()){
+            w.println("||                          GENERACION " + gen + "                           ||");
+            w.println("----------------------------------------------------------------------");
+        }
+        w.println("||                           Resultado                              ||");
+        w.println("----------------------------------------------------------------------");
+        w.print("|| RNA ||");
+        w.print(" Neuronas: " + rna.getNeuronas());
+        w.print(" Capas: " + rna.getCapas());
+        w.print(" Épocas: " + rna.getEpocas());
+        w.print(" Learning Rate: " + rna.getLearningRate());
+        w.print(" Momentum: " + rna.getMomentum());
+        w.println(evaluation.toSummaryString());
+        w.println(evaluation.toMatrixString("Matriz de confusión"));
+        w.println("----------------------------------------------------------------------");
+        w.close();
     }
     
     /**
@@ -56,7 +68,7 @@ public class RNA_AG {
      * @param poblacion
      * @throws Exception 
      */
-    private static void evaluarPoblacion(ArrayList<RNA> poblacion) throws Exception {
+    private static void evaluarPoblacion(ArrayList<RNA> poblacion, int gen) throws Exception {
         Instances instances = cargarInstancias("./10x10Forest.arff");
         Evaluation evaluation = new Evaluation(instances);
         MultilayerPerceptron mlp = new MultilayerPerceptron();
@@ -80,7 +92,7 @@ public class RNA_AG {
                 //Modificar el resultado de la RNA dado en el experimento
                 ind.setResultado(evaluation.pctCorrect());
 
-                /*NO SE GUARDA NINGUN OTRA COSA AUN*/
+                guardarEvaluacion(evaluation, ind, gen);
             }
         }
     }
@@ -280,7 +292,7 @@ public class RNA_AG {
         ArrayList<RNA> p = cargarPoblacion(filename + poblN + "_gen" + gen);
         if (!p.isEmpty()){
             //Evaluar poblacion
-            evaluarPoblacion(p);
+            evaluarPoblacion(p, gen);
             //Guardar poblacion
             guardarPoblacion(filename, p);
         }
@@ -340,16 +352,6 @@ public class RNA_AG {
     }
     
     public static void main(String[] args) throws Exception {
-        //primerPoblacion("poblacion");
-        ArrayList<RNA> r = cargarPoblacion("poblacion1_gen1");
-        for (RNA n : r){
-            System.out.println("ANTES");
-            System.out.println(n.getNeuronas());
-            n.setNeuronas(18);
-            System.out.println("DESPUES");
-            System.out.println(n.getNeuronas());
-        }
-        guardarPoblacion("poblacion3_gen1", r);
 
     }
 }
