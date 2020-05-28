@@ -128,4 +128,10 @@ public class RNA implements Comparable<RNA>{
         }
         return true;
     }
+    
+    @Override
+    public String toString(){
+        return "Neuronas: " + this.getNeuronas() + " Capas: " + this.getCapas() + " Épocas: " + this.getEpocas() 
+                + " Learning Rate: " + this.getLearningRate() + " Momentum: " + this.getMomentum();
+    }
 }
