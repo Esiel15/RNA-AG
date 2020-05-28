@@ -22,17 +22,7 @@ public class RNA_AG {
     private static final String ext = ".pobl";
     private static final int crossValidation = 10;
     private static final int pobl = 20;
-    
-    /*
-    private Instances instances;
-    private Evaluation evaluation;
-    
-    public RNA_AG(Instances instances) throws Exception{
-        this.instances = instances;
-        evaluation = new Evaluation(instances);
-    }
-    */
-    
+  
     /**
      * Carga las instancias del documento .arff
      * @param path
