@@ -105,7 +105,7 @@ public class RNA_AG {
         ArrayList<RNA> poblacion = new ArrayList<>();
         Random ram = new Random(System.currentTimeMillis());
         
-        while (poblacion.size() < RNA_AG.pobl){
+        while (poblacion.size() < pobl){
             RNA rna = new RNA(ram.nextInt(RNA.RNA_MASK + 1));
             if (!poblacion.contains(rna))
                 poblacion.add(rna);
@@ -173,14 +173,14 @@ public class RNA_AG {
     public static ArrayList<RNA> generarDescendencia(ArrayList<RNA> rnas){
         ArrayList<RNA> desc = new ArrayList<>();
         //Se genera del 25% de la poblacion actual
-        for (int i = 0; i < RNA_AG.pobl/4 ; i++){ 
-            ArrayList<RNA> descPulso = tipoPulso(rnas.get(i), rnas.get(RNA_AG.pobl/2 + i));
+        for (int i = 0; i < pobl/4 ; i++){ 
+            ArrayList<RNA> descPulso = tipoPulso(rnas.get(i), rnas.get(pobl/2 + i));
             if (!rnas.contains(descPulso.get(0)) && !desc.contains(descPulso.get(0)))
                 desc.add(descPulso.get(0));
             if (!rnas.contains(descPulso.get(1)) && !desc.contains(descPulso.get(1)))
                 desc.add(descPulso.get(1));
             
-            ArrayList<RNA> descX = tipoX(rnas.get(i), rnas.get(RNA_AG.pobl/2 + i));
+            ArrayList<RNA> descX = tipoX(rnas.get(i), rnas.get(pobl/2 + i));
             if (!rnas.contains(descX.get(0)) && !desc.contains(descX.get(0)))
                 desc.add(descX.get(0));
             if (!rnas.contains(descX.get(1)) && !desc.contains(descX.get(1)))
@@ -275,7 +275,7 @@ public class RNA_AG {
      * @param filename nombre del archivo a generar
      */
     public static void primerPoblacion(String filename) throws Exception{
-        ArrayList<RNA> p  = AG.generarPoblacion();
+        ArrayList<RNA> p  = generarPoblacion();
         guardarPoblacion(filename, p, 1); //De esta forma se guardan dos archivos diferentes de la 1er generacion
     }
     
@@ -352,6 +352,6 @@ public class RNA_AG {
     }
     
     public static void main(String[] args) throws Exception {
-
+        primerPoblacion("Poblacion");
     }
 }
