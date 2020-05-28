@@ -237,8 +237,8 @@ public class RNA_AG {
      */
     private static ArrayList<RNA> tipoPulso(RNA rna1, RNA rna2){
         ArrayList<RNA> descPulso = new ArrayList<>();
-        RNA h1 = new RNA((rna1.getRNA() & P1_MASK) + (rna2.getRNA() & P2_MASK));
-        RNA h2 = new RNA((rna1.getRNA() & P2_MASK) + (rna2.getRNA() & P1_MASK));        
+        descPulso.add(new RNA((rna1.getRNA() & P1_MASK) + (rna2.getRNA() & P2_MASK)));
+        descPulso.add(new RNA((rna1.getRNA() & P2_MASK) + (rna2.getRNA() & P1_MASK)));        
         return descPulso;
     }
     
@@ -247,8 +247,8 @@ public class RNA_AG {
      */
     private static ArrayList<RNA> tipoX(RNA rna1, RNA rna2){
         ArrayList<RNA> descX = new ArrayList<>();
-        RNA h1 = new RNA((rna1.getRNA() & X1_MASK) + (rna2.getRNA() & X2_MASK));
-        RNA h2 = new RNA((rna1.getRNA() & X2_MASK) + (rna2.getRNA() & X1_MASK));
+        descX.add(new RNA((rna1.getRNA() & X1_MASK) + (rna2.getRNA() & X2_MASK)));
+        descX.add(new RNA((rna1.getRNA() & X2_MASK) + (rna2.getRNA() & X1_MASK)));
         return descX;
     }
     
