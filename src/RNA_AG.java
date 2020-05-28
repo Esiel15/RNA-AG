@@ -45,11 +45,11 @@ public class RNA_AG {
         PrintWriter w = new PrintWriter(new BufferedWriter(fw));
         
         if (!file.exists()){
-            w.println("||                          GENERACION " + gen + "                           ||");
-            w.println("----------------------------------------------------------------------");
+            w.println("||                              GENERACION " + gen + "                              ||");
+            w.println("-----------------------------------------------------------------------------");
         }
-        w.println("||                           Resultado                              ||");
-        w.println("----------------------------------------------------------------------");
+        w.println("||                               Resultado                                 ||");
+        w.println("-----------------------------------------------------------------------------");
         w.print("|| RNA ||");
         w.print(" Neuronas: " + rna.getNeuronas());
         w.print(" Capas: " + rna.getCapas());
@@ -58,7 +58,7 @@ public class RNA_AG {
         w.print(" Momentum: " + rna.getMomentum());
         w.println(evaluation.toSummaryString());
         w.println(evaluation.toMatrixString("Matriz de confusión"));
-        w.println("----------------------------------------------------------------------");
+        w.println("-----------------------------------------------------------------------------");
         w.close();
     }
     
@@ -93,6 +93,7 @@ public class RNA_AG {
                 ind.setResultado(evaluation.pctCorrect());
 
                 guardarEvaluacion(evaluation, ind, poblN, gen);
+                System.out.println("TERMINO");
             }
         }
     }
@@ -352,6 +353,19 @@ public class RNA_AG {
     }
     
     public static void main(String[] args) throws Exception {
+        ArrayList<RNA> r = RNA_AG.cargarPoblacion("poblacion1_gen1");
         
+        r.get(0).setNeuronas(3);
+        r.get(0).setCapas(1);
+        r.get(0).setEpocas(0);
+        
+        r.get(1).setNeuronas(5);
+        r.get(1).setCapas(1);
+        r.get(1).setEpocas(0);
+        
+        
+        
+        //RNA_AG.evaluarPoblacion("poblacion", 1, 1);
+        RNA_AG.evaluarPoblacion(new ArrayList<>(r.subList(0, 2)), 1, 2);
     }
 }
