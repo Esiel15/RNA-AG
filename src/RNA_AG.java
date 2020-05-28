@@ -25,37 +25,37 @@ public class RNA_AG {
         evaluation = new Evaluation(instances);
     }
     
-    //Carga la poblcion de un archivo
-    public ArrayList<RNA> cargarPoblacion(String filename) throws FileNotFoundException, IOException{
-        ArrayList<RNA> poblacion = new ArrayList<>(20);
-        BufferedReader br = new BufferedReader(new FileReader(relativePath + filename + ext));
-        String l;
-        while ((l = br.readLine()) != null){
-            String[] rna = l.split(",");
-            poblacion.add(new RNA(Integer.parseInt(rna[0]), Double.parseDouble(rna[1])));
+    //Carga la poblacion de un archivo
+    public ArrayList<RNA> cargarPoblacion(String filename) throws FileNotFoundException, IOException, NumberFormatException{
+        ArrayList<RNA> poblacion = new ArrayList<>();
+        BufferedReader br = null;
+        
+        try {
+            br = new BufferedReader(new FileReader(relativePath + filename + ext));
+            String l;
+            while ((l = br.readLine()) != null){
+                String[] rna = l.split(",");
+                poblacion.add(new RNA(Integer.parseInt(rna[0]), Double.parseDouble(rna[1])));
+            }
+        }finally{
+            if (br != null)
+                br.close();
         }
         return poblacion;
     }
     
     //Guarda la poblacion en un archivo
     public void guardarPoblacion(String filename, ArrayList<RNA> poblacion) throws IOException{
-        PrintWriter pw = new PrintWriter(new FileWriter(relativePath + filename + ext));
-        for (RNA ind : poblacion) {
-            pw.write(ind.getRNA() + "," + ind.getResultado());
-        }
-    }
-
-    public ArrayList<RNA> generarPoblacion() {
-        ArrayList<RNA> poblacion = new ArrayList<>();
-        Random ram = new Random(System.currentTimeMillis());
-        
-        while (poblacion.size() < 20){
-            RNA rna = new RNA(ram.nextInt(RNA.RNA_MASK + 1));
-            if (!poblacion.contains(rna)){
-                poblacion.add(rna);
+        PrintWriter pw = null;
+        try{
+            pw = new PrintWriter(new FileWriter(relativePath + filename + ext));
+            for (RNA ind : poblacion) {
+                pw.println(ind.getRNA() + "," + ind.getResultado());
             }
+        }finally{
+            if (pw != null)
+                pw.close();
         }
-        return poblacion;
     }
     
     public void evaluarPoblacion(ArrayList<RNA> poblacion) throws Exception{
@@ -63,27 +63,30 @@ public class RNA_AG {
         
         //Configuracion de los parametros de la RNA
         for (RNA ind : poblacion){
-            StringBuilder hl = new StringBuilder().append(ind.getNeuronas());
-            for (int i = 1, c = ind.getCapas(), n = ind.getNeuronas() ; i < c ; i++)
-                hl.append(",").append(n);
             
-            mlp.setHiddenLayers(hl.toString());
-            mlp.setTrainingTime(ind.getEpocas());
-            mlp.setLearningRate(ind.getLearningRate());
-            mlp.setMomentum(ind.getMomentum());
-            
-            //Evaluacion del experimento
-            evaluation.crossValidateModel(mlp, instances, crossValidation, new Random(1));
-            
-            //Modificar el resultado de la RNA dado en el experimento
-            ind.setResultado(evaluation.pctCorrect());
-            
-            /*NO SE GUARDA NINGUN OTRA COSA AUN*/
+            //Si se ha realizado el experimento
+            if (ind.getResultado() == -1) {
+                StringBuilder hl = new StringBuilder().append(ind.getNeuronas());
+                for (int i = 1, c = ind.getCapas(), n = ind.getNeuronas() ; i < c ; i++)
+                    hl.append(",").append(n);
+
+                mlp.setHiddenLayers(hl.toString());
+                mlp.setTrainingTime(ind.getEpocas());
+                mlp.setLearningRate(ind.getLearningRate());
+                mlp.setMomentum(ind.getMomentum());
+
+                //Evaluacion del experimento
+                evaluation.crossValidateModel(mlp, instances, crossValidation, new Random(1));
+
+                //Modificar el resultado de la RNA dado en el experimento
+                ind.setResultado(evaluation.pctCorrect());
+
+                /*NO SE GUARDA NINGUN OTRA COSA AUN*/
+            }
         }
         
         //Se ordenan los resultados de mayor a menor
         Collections.sort(poblacion, Collections.reverseOrder());
-        
     }
     
     
@@ -95,7 +98,20 @@ public class RNA_AG {
             data.setClassIndex(data.numAttributes()-1);
         
         RNA_AG ag = new RNA_AG(data);
-
+        
+        
+        
+        /*ArrayList<RNA> p = ag.cargarPoblacion("POBLACION_NUEVA");
+        for (RNA i : p){
+            System.out.println("Resultado : " + i.getResultado());
+        }*/
+        
+        /*ArrayList<RNA> p = new ArrayList<>();
+        p.add(new RNA(1)); p.add(new RNA(4)); p.add(new RNA(135));
+        
+        ag.evaluarPoblacion(p);
+        ag.guardarPoblacion("POBLACION_NUEVA", p);*/
+        
         
     }
 }
