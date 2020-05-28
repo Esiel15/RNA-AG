@@ -22,7 +22,17 @@ public class RNA_AG {
     private static final String ext = ".pobl";
     private static final int crossValidation = 10;
     private static final int pobl = 20;
-  
+    
+    /*
+    private Instances instances;
+    private Evaluation evaluation;
+    
+    public RNA_AG(Instances instances) throws Exception{
+        this.instances = instances;
+        evaluation = new Evaluation(instances);
+    }
+    */
+    
     /**
      * Carga las instancias del documento .arff
      * @param path
@@ -36,13 +46,17 @@ public class RNA_AG {
         return data;
     }
     
+    private static void guardarEvaluacion(Evaluation evaluation, RNA rna){
+        
+    }
+    
     /**
      * Evalua todos los experimentos que no han sido evaluados o que tiene -1
      * en su atributo resultado
      * @param poblacion
      * @throws Exception 
      */
-    public static void evaluarPoblacion(ArrayList<RNA> poblacion) throws Exception {
+    private static void evaluarPoblacion(ArrayList<RNA> poblacion) throws Exception {
         Instances instances = cargarInstancias("./10x10Forest.arff");
         Evaluation evaluation = new Evaluation(instances);
         MultilayerPerceptron mlp = new MultilayerPerceptron();
@@ -256,17 +270,19 @@ public class RNA_AG {
     /**
      * Este metodo debe ser ejecutado cuando se tenga al menos una  
      * RNA en el archivo que no haya sido evaluada en la poblacion. 
-     * @param poblFilename ruta donde se encuentra la poblacion a evaluar
+     * @param filename archivo donde se encuentra la poblacion
+     * @param poblN numero del archivo de la poblacion
+     * @param gen generacion de la poblacion
      * @throws Exception 
      */
-    public static void evaluarPoblacion(String poblFilename) throws Exception{
+    public static void evaluarPoblacion(String filename, int poblN, int gen) throws Exception{
         //Cargar poblacion
-        ArrayList<RNA> p = cargarPoblacion(poblFilename);
+        ArrayList<RNA> p = cargarPoblacion(filename + poblN + "_gen" + gen);
         if (!p.isEmpty()){
             //Evaluar poblacion
             evaluarPoblacion(p);
             //Guardar poblacion
-            guardarPoblacion(poblFilename, p);
+            guardarPoblacion(filename, p);
         }
     }
     
@@ -298,14 +314,14 @@ public class RNA_AG {
      * Si no se logran crear <pobl> descendientes, se crearan los restantes (si es posible) apartir de mutaciones
      * 
      * 
-     * @param poblFilename archivo que contiene TODAS las generaciones de rnas
+     * @param filename archivo que contiene TODAS las generaciones de rnas
      * @param gen generacion que va a ser creada de poblacion actual
      * @throws NumberFormatException
      * @throws IOException 
      */
-    public static void Alg_Gen(String poblFilename, int gen) throws NumberFormatException, IOException{
+    public static void Alg_Gen(String filename, int gen) throws NumberFormatException, IOException{
         //Carga TODA la poblacion que ha sido creada a traves de generaciones 
-        ArrayList<RNA> rnas = cargarPoblacion(poblFilename);
+        ArrayList<RNA> rnas = cargarPoblacion(filename);
         Random ram = new Random(System.currentTimeMillis());
         
         //Genera descendencia
@@ -320,7 +336,7 @@ public class RNA_AG {
             }
         }
         //Guarda la descendencia para ser evaluada con evaluarPoblacion()
-        guardarPoblacion(poblFilename, desc, gen);
+        guardarPoblacion(filename, desc, gen);
     }
     
     public static void main(String[] args) throws Exception {
@@ -328,10 +344,10 @@ public class RNA_AG {
         ArrayList<RNA> r = cargarPoblacion("poblacion1_gen1");
         for (RNA n : r){
             System.out.println("ANTES");
-            System.out.println(n.getRNA());
-            n.setNeuronas(10);
+            System.out.println(n.getNeuronas());
+            n.setNeuronas(18);
             System.out.println("DESPUES");
-            System.out.println(n.getRNA());
+            System.out.println(n.getNeuronas());
         }
         guardarPoblacion("poblacion3_gen1", r);
 
