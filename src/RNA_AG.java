@@ -38,9 +38,9 @@ public class RNA_AG {
         return data;
     }
     
-    private static void guardarEvaluacion(Evaluation evaluation, RNA rna, int gen) throws IOException, Exception{
+    private static void guardarEvaluacion(Evaluation evaluation, RNA rna, int poblN, int gen) throws IOException, Exception{
         //Guarda la información de la evaluacion de manera legible
-        File file = new File("resultados_gen" + gen + ".txt");
+        File file = new File(relativePath + "resultados" + poblN + "_gen" + gen + ".txt");
         FileWriter fw = new FileWriter(file, true);
         PrintWriter w = new PrintWriter(new BufferedWriter(fw));
         
@@ -68,7 +68,7 @@ public class RNA_AG {
      * @param poblacion
      * @throws Exception 
      */
-    private static void evaluarPoblacion(ArrayList<RNA> poblacion, int gen) throws Exception {
+    private static void evaluarPoblacion(ArrayList<RNA> poblacion, int poblN, int gen) throws Exception {
         Instances instances = cargarInstancias("./10x10Forest.arff");
         Evaluation evaluation = new Evaluation(instances);
         MultilayerPerceptron mlp = new MultilayerPerceptron();
@@ -92,7 +92,7 @@ public class RNA_AG {
                 //Modificar el resultado de la RNA dado en el experimento
                 ind.setResultado(evaluation.pctCorrect());
 
-                guardarEvaluacion(evaluation, ind, gen);
+                guardarEvaluacion(evaluation, ind, poblN, gen);
             }
         }
     }
@@ -292,7 +292,7 @@ public class RNA_AG {
         ArrayList<RNA> p = cargarPoblacion(filename + poblN + "_gen" + gen);
         if (!p.isEmpty()){
             //Evaluar poblacion
-            evaluarPoblacion(p, gen);
+            evaluarPoblacion(p, poblN, gen);
             //Guardar poblacion
             guardarPoblacion(filename, p);
         }
@@ -352,6 +352,14 @@ public class RNA_AG {
     }
     
     public static void main(String[] args) throws Exception {
-        primerPoblacion("Poblacion");
+        ArrayList<RNA> p = cargarPoblacion("Poblacion2_gen1");
+        for (RNA r : p){
+            System.out.println("RNA");
+            System.out.println(r.getNeuronas());
+            System.out.println(r.getCapas());
+            System.out.println(r.getEpocas());
+            System.out.println(r.getLearningRate());
+            System.out.println(r.getMomentum());
+        }
     }
 }
