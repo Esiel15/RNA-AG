@@ -14,4 +14,4 @@ MacOS y Linux
 >java --add-open=java.base/java.lang=ALL-UNNAMED -cp ".:weka.jar" class.RNA_AG
 
 Windows
->java --add-open=java.base/java.lang=ALL-UNNAMED -cp ".:weka.jar" class.RNA_AG
+>java --add-open=java.base/java.lang=ALL-UNNAMED -cp ".;weka.jar" class.RNA_AG
