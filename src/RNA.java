@@ -41,8 +41,10 @@ public class RNA implements Comparable<RNA>{
     }
     
     public void setNeuronas(int neuronas){
-        if (neuronas >= 3 && neuronas <= 18)
-            rna &= (((neuronas - 3 << 9 ) & N_MASK) ^ RNA_MASK ^ N_MASK);
+        if (neuronas >= 3 && neuronas <= 18){
+            rna &= RNA_MASK - N_MASK; //Se eliminan las antiguas neuronas
+            rna += (neuronas - 3) << 9; //Se colocan las nuevas neuronas
+        }
     }
 
     public int getCapas(){
@@ -50,8 +52,10 @@ public class RNA implements Comparable<RNA>{
     }
     
     public void setCapas(int capas){
-        if (capas >= 1 && capas <= 4)
-            rna &= (((capas - 1 << 7 ) & C_MASK) ^ RNA_MASK ^ C_MASK);
+        if (capas >= 1 && capas <= 4){
+            rna &= RNA_MASK - C_MASK; //Se eliminan las antiguas capas
+            rna += (capas - 1) << 7; ////Se colocan las nuevas capas
+        }
     }
     
     public int getEpocas(){
@@ -61,8 +65,10 @@ public class RNA implements Comparable<RNA>{
     /**El número del numero de épocas sera el 500 + (250 * num)
      * @param num tiene que estar en el rango de 0 - 7*/
     public void setEpocas(int num){
-        if (num >= 0 && num <= 7)
-            rna &= (((num << 4 ) & E_MASK) ^ RNA_MASK ^ E_MASK);
+        if (num >= 0 && num <= 7){
+            rna &= RNA_MASK - E_MASK; //Se eliminan las antiguas epocas
+            rna += num << 4; ////Se colocan las nuevas epocas
+        }
     }
     
    
@@ -73,8 +79,10 @@ public class RNA implements Comparable<RNA>{
     /**El valor del Learning Rate sera 2.0 + (0.5 * num)
      * @param num tiene que estar en el rango de 0 - 3*/
     public void setLearningRate(int num){
-        if (num >= 0 && num <= 3)
-            rna &= (((num << 2 ) & LR_MASK) ^ RNA_MASK ^ LR_MASK);
+        if (num >= 0 && num <= 3){
+            rna &= RNA_MASK - LR_MASK; //Se elimina el antiguo learning rate
+            rna += num << 2; ////Se coloca el nuevo learning rate
+        }
     }
 
     public double getMomentum(){
@@ -84,8 +92,10 @@ public class RNA implements Comparable<RNA>{
     /**El valor del Momentum sera 2.0 + (0.5 * num)
      * @param num tiene que estar en el rango de 0 - 3*/
     public void setMomentum(int num){
-        if (num >= 0 && num <= 3)
-            rna &= ((num & M_MASK) ^ RNA_MASK ^ M_MASK);
+        if (num >= 0 && num <= 3){
+            rna &= RNA_MASK - M_MASK; //Se elimina el antigua momentum
+            rna += num; ////Se coloca el nuevo momentum
+        }
     }
     
     @Override
