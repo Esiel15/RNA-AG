@@ -353,19 +353,6 @@ public class RNA_AG {
     }
     
     public static void main(String[] args) throws Exception {
-        ArrayList<RNA> r = RNA_AG.cargarPoblacion("poblacion1_gen1");
-        
-        r.get(0).setNeuronas(3);
-        r.get(0).setCapas(1);
-        r.get(0).setEpocas(0);
-        
-        r.get(1).setNeuronas(5);
-        r.get(1).setCapas(1);
-        r.get(1).setEpocas(0);
-        
-        
-        
-        //RNA_AG.evaluarPoblacion("poblacion", 1, 1);
-        RNA_AG.evaluarPoblacion(new ArrayList<>(r.subList(0, 2)), 1, 2);
+
     }
 }
