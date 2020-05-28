@@ -6,8 +6,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Random;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.MultilayerPerceptron;
@@ -89,7 +92,8 @@ public class RNA_AG {
                 ind.setResultado(evaluation.pctCorrect());
 
                 guardarEvaluacion(evaluation, ind, poblN, gen);
-                System.out.println("TERMINO");
+                DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                System.out.println("Termino a las: " + dateFormat.format(new Date()));
             }
         }
     }
@@ -349,12 +353,8 @@ public class RNA_AG {
     }
     
     public static void main(String[] args) throws Exception {
-        ArrayList<RNA> p = RNA_AG.cargarPoblacion("poblacion2_gen1");
-        for (RNA r : p){
-            System.out.println(r);
-        }
-        
-        
-        //RNA_AG.evaluarPoblacion("poblacion", 1, 1);
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        System.out.println("Inicio de ejecucion: " + dateFormat.format(new Date()));
+        RNA_AG.evaluarPoblacion("poblacion", 1, 1); //Cambiale a ("poblacion", 2, n)
     }
 }
