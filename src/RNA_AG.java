@@ -352,14 +352,6 @@ public class RNA_AG {
     }
     
     public static void main(String[] args) throws Exception {
-        ArrayList<RNA> p = cargarPoblacion("Poblacion2_gen1");
-        for (RNA r : p){
-            System.out.println("RNA");
-            System.out.println(r.getNeuronas());
-            System.out.println(r.getCapas());
-            System.out.println(r.getEpocas());
-            System.out.println(r.getLearningRate());
-            System.out.println(r.getMomentum());
-        }
+        
     }
 }
