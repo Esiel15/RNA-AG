@@ -50,12 +50,8 @@ public class RNA_AG {
         }
         w.println("||                               Resultado                                 ||");
         w.println("-----------------------------------------------------------------------------");
-        w.print("|| RNA ||");
-        w.print(" Neuronas: " + rna.getNeuronas());
-        w.print(" Capas: " + rna.getCapas());
-        w.print(" Épocas: " + rna.getEpocas());
-        w.print(" Learning Rate: " + rna.getLearningRate());
-        w.print(" Momentum: " + rna.getMomentum());
+        w.print("|| RNA || ");
+        w.println(rna.toString());
         w.println(evaluation.toSummaryString());
         w.println(evaluation.toMatrixString("Matriz de confusión"));
         w.println("-----------------------------------------------------------------------------");
@@ -353,19 +349,12 @@ public class RNA_AG {
     }
     
     public static void main(String[] args) throws Exception {
-        ArrayList<RNA> r = RNA_AG.cargarPoblacion("poblacion1_gen1");
-        
-        r.get(0).setNeuronas(3);
-        r.get(0).setCapas(1);
-        r.get(0).setEpocas(0);
-        
-        r.get(1).setNeuronas(5);
-        r.get(1).setCapas(1);
-        r.get(1).setEpocas(0);
-        
+        ArrayList<RNA> p = RNA_AG.cargarPoblacion("poblacion2_gen1");
+        for (RNA r : p){
+            System.out.println(r);
+        }
         
         
         //RNA_AG.evaluarPoblacion("poblacion", 1, 1);
-        RNA_AG.evaluarPoblacion(new ArrayList<>(r.subList(0, 2)), 1, 2);
     }
 }
