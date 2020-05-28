@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-
 public class AG {
     private static final int X1_MASK = 0b1111110000000;
     private static final int X2_MASK = 0b1111111;
@@ -23,15 +22,15 @@ public class AG {
         this.rnas = rnas;
     }
 
-    /**Genera descende
+    /**Genera descendencia
      * Solo se agregaran a la descendencia si no existen en la poblacion actual
      */
     public ArrayList<RNA> generarDescendencia(){
         ArrayList<RNA> desc = new ArrayList<>();
         
-        for (int i = 0; i < 5 ; i++){
-            desc.addAll(tipoPulso(rnas.get(i), rnas.get(9 + i)));
-            desc.addAll(tipoX(rnas.get(0), rnas.get(10 + i)));
+        for (int i = 0; i < RNA_AG.pobl/4 ; i++){
+            desc.addAll(tipoPulso(rnas.get(i), rnas.get(RNA_AG.pobl/2 + i)));
+            desc.addAll(tipoX(rnas.get(i), rnas.get(RNA_AG.pobl/2 + i)));
         }
        return desc; 
     }
@@ -119,17 +118,16 @@ public class AG {
         }
         return mut; 
     }
-    
-    
-    public void sortRNAs(){
-        Collections.sort(rnas, Collections.reverseOrder());
-    }
-    
+
+    /**
+     *
+     * @return retorna un poblacion creada aleatoriamente
+     */
     public static ArrayList<RNA> generarPoblacion() {
         ArrayList<RNA> poblacion = new ArrayList<>();
         Random ram = new Random(System.currentTimeMillis());
         
-        while (poblacion.size() < 20){
+        while (poblacion.size() < RNA_AG.pobl){
             RNA rna = new RNA(ram.nextInt(RNA.RNA_MASK + 1));
             if (!poblacion.contains(rna))
                 poblacion.add(rna);
