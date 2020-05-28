@@ -1,117 +1,121 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
-import weka.classifiers.Evaluation;
-import weka.classifiers.functions.MultilayerPerceptron;
-import weka.core.Instances;
-import weka.core.converters.ConverterUtils;
+public class RNA implements Comparable<RNA>{
+    public static final int N_MASK = 0b1111000000000;
+    public static final int C_MASK = 0b110000000;
+    public static final int E_MASK = 0b1110000;
+    public static final int LR_MASK = 0b1100;
+    public static final int M_MASK = 0b11;
+    
+    public static final int RNA_MASK = 0b1111111111111;
+    
+    private int rna;
+    private double r;
 
-public class RNA_AG {
-    private static final String relativePath = "./";
-    private static final String ext = ".pobl";
-    private static final int crossValidation = 10;
-    
-    private Instances instances;
-    private Evaluation evaluation;
-    
-    public RNA_AG(Instances instances) throws Exception{
-        this.instances = instances;
-        evaluation = new Evaluation(instances);
+    public RNA(int rna){
+        this.rna = rna & RNA_MASK;
+        r = -1;
     }
     
-    //Carga la poblacion de un archivo
-    public ArrayList<RNA> cargarPoblacion(String filename) throws FileNotFoundException, IOException, NumberFormatException{
-        ArrayList<RNA> poblacion = new ArrayList<>();
-        BufferedReader br = null;
-        
-        try {
-            br = new BufferedReader(new FileReader(relativePath + filename + ext));
-            String l;
-            while ((l = br.readLine()) != null){
-                String[] rna = l.split(",");
-                poblacion.add(new RNA(Integer.parseInt(rna[0]), Double.parseDouble(rna[1])));
-            }
-        }finally{
-            if (br != null)
-                br.close();
+    public RNA(int rna, double resultado){
+        this.rna = rna & RNA_MASK;
+        r = resultado;
+    }
+    
+    public int getRNA() {
+        return rna;
+    }
+
+    public void setRNA(int rna) {
+        this.rna = rna;
+    }
+
+    public double getResultado() {
+        return r;
+    }
+
+    public void setResultado(double r) {
+        this.r = r;
+    }
+    
+    public int getNeuronas(){
+        return ((rna & N_MASK) >> 9) + 3;
+    }
+    
+    public void setNeuronas(int neuronas){
+        if (neuronas >= 3 && neuronas <= 18)
+            rna &= (((neuronas - 3 << 9 ) & N_MASK) ^ RNA_MASK ^ N_MASK);
+    }
+
+    public int getCapas(){
+        return ((rna & C_MASK) >> 7) + 1;
+    }
+    
+    public void setCapas(int capas){
+        if (capas >= 1 && capas <= 4)
+            rna &= (((capas - 1 << 7 ) & C_MASK) ^ RNA_MASK ^ C_MASK);
+    }
+    
+    public int getEpocas(){
+        return ((rna & E_MASK) >> 4) * 250 + 500;
+    }
+    
+    /**El número del numero de épocas sera el 500 + (250 * num)
+     * @param num tiene que estar en el rango de 0 - 7*/
+    public void setEpocas(int num){
+        if (num >= 0 && num <= 7)
+            rna &= (((num << 4 ) & E_MASK) ^ RNA_MASK ^ E_MASK);
+    }
+    
+   
+    public double getLearningRate(){
+        return ((rna & LR_MASK) >> 2) * 0.5 + 2.0;
+    }
+    
+    /**El valor del Learning Rate sera 2.0 + (0.5 * num)
+     * @param num tiene que estar en el rango de 0 - 3*/
+    public void setLearningRate(int num){
+        if (num >= 0 && num <= 3)
+            rna &= (((num << 2 ) & LR_MASK) ^ RNA_MASK ^ LR_MASK);
+    }
+
+    public double getMomentum(){
+        return (rna & M_MASK) * 0.5 + 2.0;
+    }
+    
+    /**El valor del Momentum sera 2.0 + (0.5 * num)
+     * @param num tiene que estar en el rango de 0 - 3*/
+    public void setMomentum(int num){
+        if (num >= 0 && num <= 3)
+            rna &= ((num & M_MASK) ^ RNA_MASK ^ M_MASK);
+    }
+    
+    @Override
+    public int compareTo(RNA o) {
+        return Double.compare(r, o.getResultado());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + this.rna;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
         }
-        return poblacion;
-    }
-    
-    //Guarda la poblacion en un archivo
-    public void guardarPoblacion(String filename, ArrayList<RNA> poblacion) throws IOException{
-        PrintWriter pw = null;
-        try{
-            pw = new PrintWriter(new FileWriter(relativePath + filename + ext));
-            for (RNA ind : poblacion) {
-                pw.println(ind.getRNA() + "," + ind.getResultado());
-            }
-        }finally{
-            if (pw != null)
-                pw.close();
+        if (obj == null) {
+            return false;
         }
-    }
-    
-    public void evaluarPoblacion(ArrayList<RNA> poblacion) throws Exception{
-        MultilayerPerceptron mlp = new MultilayerPerceptron();
-        
-        //Configuracion de los parametros de la RNA
-        for (RNA ind : poblacion){
-            
-            //Si se ha realizado el experimento
-            if (ind.getResultado() == -1) {
-                StringBuilder hl = new StringBuilder().append(ind.getNeuronas());
-                for (int i = 1, c = ind.getCapas(), n = ind.getNeuronas() ; i < c ; i++)
-                    hl.append(",").append(n);
-
-                mlp.setHiddenLayers(hl.toString());
-                mlp.setTrainingTime(ind.getEpocas());
-                mlp.setLearningRate(ind.getLearningRate());
-                mlp.setMomentum(ind.getMomentum());
-
-                //Evaluacion del experimento
-                evaluation.crossValidateModel(mlp, instances, crossValidation, new Random(1));
-
-                //Modificar el resultado de la RNA dado en el experimento
-                ind.setResultado(evaluation.pctCorrect());
-
-                /*NO SE GUARDA NINGUN OTRA COSA AUN*/
-            }
+        if (getClass() != obj.getClass()) {
+            return false;
         }
         
-        //Se ordenan los resultados de mayor a menor
-        Collections.sort(poblacion, Collections.reverseOrder());
-    }
-    
-    
-    public static void main(String[] args) throws Exception {
-        
-        //Carga las instancias al programa
-        Instances data = ConverterUtils.DataSource.read(args[0]);
-        if (data.classIndex() == -1) 
-            data.setClassIndex(data.numAttributes()-1);
-        
-        RNA_AG ag = new RNA_AG(data);
-        
-        
-        
-        /*ArrayList<RNA> p = ag.cargarPoblacion("POBLACION_NUEVA");
-        for (RNA i : p){
-            System.out.println("Resultado : " + i.getResultado());
-        }*/
-        
-        /*ArrayList<RNA> p = new ArrayList<>();
-        p.add(new RNA(1)); p.add(new RNA(4)); p.add(new RNA(135));
-        
-        ag.evaluarPoblacion(p);
-        ag.guardarPoblacion("POBLACION_NUEVA", p);*/
-        
-        
+        final RNA other = (RNA) obj;
+        if (this.rna != other.rna) {
+            return false;
+        }
+        return true;
     }
 }
