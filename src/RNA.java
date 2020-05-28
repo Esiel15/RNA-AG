@@ -12,7 +12,12 @@ public class RNA implements Comparable<RNA>{
 
     public RNA(int rna){
         this.rna = rna & RNA_MASK;
-        r = 0;
+        r = -1;
+    }
+    
+    public RNA(int rna, double resultado){
+        this.rna = rna & RNA_MASK;
+        r = resultado;
     }
     
     public int getRNA() {
@@ -53,8 +58,8 @@ public class RNA implements Comparable<RNA>{
         return ((rna & E_MASK) >> 4) * 250 + 500;
     }
     
-    /** El parametro num tiene que estar en el rango de 0 - 7
-       El número del numero de épocas sera el 500 + (250 * num) */
+    /**El número del numero de épocas sera el 500 + (250 * num)
+     * @param num tiene que estar en el rango de 0 - 7*/
     public void setEpocas(int num){
         if (num >= 0 && num <= 7)
             rna &= (((num << 4 ) & E_MASK) ^ RNA_MASK ^ E_MASK);
@@ -65,8 +70,8 @@ public class RNA implements Comparable<RNA>{
         return ((rna & LR_MASK) >> 2) * 0.5 + 2.0;
     }
     
-    /** El parametro num tiene que estar en el rango de 0 - 3
-       El valor del Learning Rate sera 2.0 + (0.5 * num) */
+    /**El valor del Learning Rate sera 2.0 + (0.5 * num)
+     * @param num tiene que estar en el rango de 0 - 3*/
     public void setLearningRate(int num){
         if (num >= 0 && num <= 3)
             rna &= (((num << 2 ) & LR_MASK) ^ RNA_MASK ^ LR_MASK);
@@ -76,8 +81,8 @@ public class RNA implements Comparable<RNA>{
         return (rna & M_MASK) * 0.5 + 2.0;
     }
     
-    /** El parametro num tiene que estar en el rango de 0 - 3
-       El valor del Momentum sera 2.0 + (0.5 * num) */
+    /**El valor del Momentum sera 2.0 + (0.5 * num)
+     * @param num tiene que estar en el rango de 0 - 3*/
     public void setMomentum(int num){
         if (num >= 0 && num <= 3)
             rna &= ((num & M_MASK) ^ RNA_MASK ^ M_MASK);
