@@ -13,11 +13,17 @@ import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
 
 public class RNA_AG {
-    private static final String relativePath = "./poblacion";
+    private static final int X1_MASK = 0b1111110000000;
+    private static final int X2_MASK = 0b1111111;
+    private static final int P1_MASK = 0b1010101011010;
+    private static final int P2_MASK = 0b0101010100101;
+    
+    private static final String relativePath = "./poblacion/";
     private static final String ext = ".pobl";
     private static final int crossValidation = 10;
-    public static final int pobl = 20;
+    private static final int pobl = 20;
     
+    /*
     private Instances instances;
     private Evaluation evaluation;
     
@@ -25,14 +31,35 @@ public class RNA_AG {
         this.instances = instances;
         evaluation = new Evaluation(instances);
     }
-
-    public void evaluarPoblacion(ArrayList<RNA> poblacion) throws Exception{
+    */
+    
+    /**
+     * Carga las instancias del documento .arff
+     * @param path
+     * @return
+     * @throws Exception 
+     */
+    private static Instances cargarInstancias(String path) throws Exception {
+        Instances data = ConverterUtils.DataSource.read(path);
+        if (data.classIndex() == -1) 
+            data.setClassIndex(data.numAttributes()-1);
+        return data;
+    }
+    
+    /**
+     * Evalua todos los experimentos que no han sido evaluados o que tiene -1
+     * en su atributo resultado
+     * @param poblacion
+     * @throws Exception 
+     */
+    public static void evaluarPoblacion(ArrayList<RNA> poblacion) throws Exception {
+        Instances instances = cargarInstancias("./10x10Forest.arff");
+        Evaluation evaluation = new Evaluation(instances);
         MultilayerPerceptron mlp = new MultilayerPerceptron();
         
         //Configuracion de los parametros de la RNA
         for (RNA ind : poblacion){
-            
-            //Si se ha realizado el experimento
+            //Si no se ha realizado el experimento lo realiza
             if (ind.getResultado() == -1) {
                 StringBuilder hl = new StringBuilder().append(ind.getNeuronas());
                 for (int i = 1, c = ind.getCapas(), n = ind.getNeuronas() ; i < c ; i++)
@@ -45,7 +72,6 @@ public class RNA_AG {
 
                 //Evaluacion del experimento
                 evaluation.crossValidateModel(mlp, instances, crossValidation, new Random(1));
-                System.out.println("TERMINO");
 
                 //Modificar el resultado de la RNA dado en el experimento
                 ind.setResultado(evaluation.pctCorrect());
@@ -56,7 +82,23 @@ public class RNA_AG {
     }
     
     /**
-     * Ordena rnas de mayor a menor
+     *
+     * @return retorna un poblacion creada aleatoriamente
+     */
+    public static ArrayList<RNA> generarPoblacion() {
+        ArrayList<RNA> poblacion = new ArrayList<>();
+        Random ram = new Random(System.currentTimeMillis());
+        
+        while (poblacion.size() < RNA_AG.pobl){
+            RNA rna = new RNA(ram.nextInt(RNA.RNA_MASK + 1));
+            if (!poblacion.contains(rna))
+                poblacion.add(rna);
+        }
+        return poblacion;
+    }
+    
+    /**
+     * Ordena ArrayList<RNA> de mayor a menor
      */
     private static void sortRNAs(ArrayList<RNA> rnas){
         Collections.sort(rnas, Collections.reverseOrder());
@@ -66,7 +108,6 @@ public class RNA_AG {
     private static ArrayList<RNA> cargarPoblacion(String filename) throws FileNotFoundException, IOException, NumberFormatException{
         ArrayList<RNA> poblacion = new ArrayList<>();
         BufferedReader br = null;
-        
         try {
             br = new BufferedReader(new FileReader(relativePath + filename + ext));
             String l;
@@ -86,10 +127,8 @@ public class RNA_AG {
     //Guarda la poblacion en un archivo
     private static void guardarPoblacion(String filename, ArrayList<RNA> poblacion) throws IOException{
         if (poblacion != null && poblacion.size() > 0){
-            
             //Se ordenan de mayor a menor
             sortRNAs(poblacion);
-            
             PrintWriter pw = null;
             try{
                 pw = new PrintWriter(new FileWriter(relativePath + filename + ext));
@@ -109,17 +148,115 @@ public class RNA_AG {
         guardarPoblacion(filename.concat("2_gen" + gen), new ArrayList<>(poblacion.subList(poblacion.size()/2, poblacion.size())));
     }
     
-    public static Instances cargarInstancias(String path) throws Exception {
-        //Carga las instancias al programa
-        Instances data = ConverterUtils.DataSource.read(path);
-        if (data.classIndex() == -1) 
-            data.setClassIndex(data.numAttributes()-1);
-        
-        return data;
+    /**Genera descendencia
+     * Solo se agregaran a la descendencia si no existen en la poblacion actual
+     * ni en la descendencia ya generada
+     * @param rnas
+     * @return idealmente crea una nueva poblacin de <pobl>
+     */
+    public static ArrayList<RNA> generarDescendencia(ArrayList<RNA> rnas){
+        ArrayList<RNA> desc = new ArrayList<>();
+        //Se genera del 25% de la poblacion actual
+        for (int i = 0; i < RNA_AG.pobl/4 ; i++){ 
+            ArrayList<RNA> descPulso = tipoPulso(rnas.get(i), rnas.get(RNA_AG.pobl/2 + i));
+            if (!rnas.contains(descPulso.get(0)) && !desc.contains(descPulso.get(0)))
+                desc.add(descPulso.get(0));
+            if (!rnas.contains(descPulso.get(1)) && !desc.contains(descPulso.get(1)))
+                desc.add(descPulso.get(1));
+            
+            ArrayList<RNA> descX = tipoX(rnas.get(i), rnas.get(RNA_AG.pobl/2 + i));
+            if (!rnas.contains(descX.get(0)) && !desc.contains(descX.get(0)))
+                desc.add(descX.get(0));
+            if (!rnas.contains(descX.get(1)) && !desc.contains(descX.get(1)))
+                desc.add(descX.get(1));
+        }
+       return desc; 
+    }
+    
+    /**Genera un desceniente resultado de la mutacion del parametro rna
+     * @param rna RNA a la cual se le va a aplicar la mutacion
+     * @return retorna la RNA ya mutada
+     */
+    public static RNA generarMutacion(RNA rna, int changes){
+        RNA mut = new RNA(rna.getRNA());
+        Random ram = new Random(System.currentTimeMillis());
+        for (int i = 1, num ; i < changes ; i++){
+            num = ram.nextInt(100) + 1; //1-100
+            if (num <= 5){ //Capas 5%
+                switch (ram.nextInt(2) + 1){
+                    case 1 : mut.setRNA(mut.getRNA() ^ 0b100000000);
+                        break;
+                    case 2 : mut.setRNA(mut.getRNA() ^ 0b10000000);
+                        break;
+                }
+            }else if (num <= 15){ //Neuronas 10%
+                switch (ram.nextInt(4) + 1){
+                    case 1 : mut.setRNA(mut.getRNA() ^ 0b1000000000000);
+                        break;
+                    case 2 : mut.setRNA(mut.getRNA() ^ 0b100000000000);
+                        break;
+                    case 3 : mut.setRNA(mut.getRNA() ^ 0b10000000000);
+                        break;
+                    case 4 : mut.setRNA(mut.getRNA() ^ 0b10000000000);
+                        break;
+                }
+            }else if (num <= 30){ //Epocas 15%
+                switch (ram.nextInt(3) + 1){
+                    case 1 : mut.setRNA(mut.getRNA() ^ 0b1000000);
+                        break;
+                    case 2 : mut.setRNA(mut.getRNA() ^ 0b100000);
+                        break;
+                    case 3 : mut.setRNA(mut.getRNA() ^ 0b10000);
+                        break;
+                }
+            }else if (num <= 60){ //Momentum 30%
+                switch (ram.nextInt(2) + 1){
+                    case 1 : mut.setRNA(mut.getRNA() ^ 0b10);
+                        break;
+                    case 2 : mut.setRNA(mut.getRNA() ^ 0b1);
+                        break;
+                }
+            }else{ //Learning Rate 40%
+                switch (ram.nextInt(2) + 1){
+                    case 1 : mut.setRNA(mut.getRNA() ^ 0b1000);
+                        break;
+                    case 2 : mut.setRNA(mut.getRNA() ^ 0b100);
+                        break;
+                }
+            }
+        }
+        return mut; 
+    }
+    
+    /**Genera dos hijos utilizando la estrategia de cruce Pulso
+     * Solo se agregaran a la descendencia si no existen en la poblacion actual
+     */
+    private static ArrayList<RNA> tipoPulso(RNA rna1, RNA rna2){
+        ArrayList<RNA> descPulso = new ArrayList<>();
+        RNA h1 = new RNA((rna1.getRNA() & P1_MASK) + (rna2.getRNA() & P2_MASK));
+        RNA h2 = new RNA((rna1.getRNA() & P2_MASK) + (rna2.getRNA() & P1_MASK));        
+        return descPulso;
+    }
+    
+    /**Genera dos hijos utilizando la estrategia de cruce X
+     * Solo se agregaran a la descendencia si no existen en la poblacion actual
+     */
+    private static ArrayList<RNA> tipoX(RNA rna1, RNA rna2){
+        ArrayList<RNA> descX = new ArrayList<>();
+        RNA h1 = new RNA((rna1.getRNA() & X1_MASK) + (rna2.getRNA() & X2_MASK));
+        RNA h2 = new RNA((rna1.getRNA() & X2_MASK) + (rna2.getRNA() & X1_MASK));
+        return descX;
     }
     
     /**
+     * 
+     * ALGORITMO GENETICO
+     * 
+     */
+    
+    /**
      * Este metodo solo debe ser llamado al inicio y una unica vez durante todo el proceso de entrenamiento
+     * @param filename nombre del archivo a generar
      */
     public static void primerPoblacion(String filename) throws Exception{
         ArrayList<RNA> p  = AG.generarPoblacion();
@@ -129,22 +266,18 @@ public class RNA_AG {
     /**
      * Este metodo debe ser ejecutado cuando se tenga al menos una  
      * RNA en el archivo que no haya sido evaluada en la poblacion. 
-     * @param instPath ruta donde se encuentra el archivo .arff
      * @param poblFilename ruta donde se encuentra la poblacion a evaluar
      * @throws Exception 
      */
-    public static void evaluarPoblacion(String instPath, String poblFilename) throws Exception{
-        //Cargar instancias
-        RNA_AG ag = new RNA_AG(cargarInstancias(instPath));
+    public static void evaluarPoblacion(String poblFilename) throws Exception{
         //Cargar poblacion
         ArrayList<RNA> p = cargarPoblacion(poblFilename);
         if (!p.isEmpty()){
             //Evaluar poblacion
-            ag.evaluarPoblacion(p);
+            evaluarPoblacion(p);
             //Guardar poblacion
             guardarPoblacion(poblFilename, p);
         }
-        
     }
     
     /**
@@ -172,7 +305,7 @@ public class RNA_AG {
   
     /**
      * Este metodo es el encargado de crear la descendencia de <pobl> rnas de una poblacion
-     * Si no se logran crear <pobl> descendientes, se crearan los restantes apartir de mutaciones, de acuerdo a la regla
+     * Si no se logran crear <pobl> descendientes, se crearan los restantes (si es posible) apartir de mutaciones
      * 
      * 
      * @param poblFilename archivo que contiene TODAS las generaciones de rnas
@@ -182,18 +315,16 @@ public class RNA_AG {
      */
     public static void Alg_Gen(String poblFilename, int gen) throws NumberFormatException, IOException{
         //Carga TODA la poblacion que ha sido creada a traves de generaciones 
-        AG ag = new AG(cargarPoblacion(poblFilename));
-        ArrayList<RNA> rnas = ag.getRNAs(); //Toda la poblacion
-        
+        ArrayList<RNA> rnas = cargarPoblacion(poblFilename);
         Random ram = new Random(System.currentTimeMillis());
         
         //Genera descendencia
-        ArrayList<RNA> desc = ag.generarDescendencia();
+        ArrayList<RNA> desc = generarDescendencia(rnas);
         
         //Genera mutaciones hasta que haya <pobl> hijos o hasta llegar al limite de intentos (5)
         for (int i = 0 ; (i < 5 && desc.size() < pobl) ; i++){
-            for (int j = 0, size = desc.size() ; j < pobl - size ; j++){
-                RNA rna = ag.generarMutacion(rnas.get(ram.nextInt(5))); //Se toma aleatoriamente 1 rna de las 5 mejores
+            for (int j = 0, size = desc.size() ; j < (pobl - size) ; j++){
+                RNA rna = generarMutacion(rnas.get(ram.nextInt(5)), 3); //Se toma aleatoriamente 1 rna de las 5 mejores
                 if (!rnas.contains(rna) && !desc.contains(rna))
                     desc.add(rna);
             }
@@ -203,24 +334,16 @@ public class RNA_AG {
     }
     
     public static void main(String[] args) throws Exception {
-        
-        
-        /*
-        Instances data = ConverterUtils.DataSource.read(args[0]);
-        if (data.classIndex() == -1) 
-            data.setClassIndex(data.numAttributes()-1);
-        
-        RNA_AG ag = new RNA_AG(data);*/
-        
         //primerPoblacion("poblacion");
-        //evaluarPoblacion(args[0], "poblacion2_gen1");
-        //unirPoblaciones("poblacion", 1);
-        
-        //Alg_Gen("poblacion", 2);
-        
-        
-        primerPoblacion("poblacion");
+        ArrayList<RNA> r = cargarPoblacion("poblacion1_gen1");
+        for (RNA n : r){
+            System.out.println("ANTES");
+            System.out.println(n.getRNA());
+            n.setNeuronas(10);
+            System.out.println("DESPUES");
+            System.out.println(n.getRNA());
+        }
+        guardarPoblacion("poblacion3_gen1", r);
+
     }
-    
-    
 }
