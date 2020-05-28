@@ -4,10 +4,10 @@ Conseguir el mejor resultado de precisión global posible de una Red Neuronal Ar
 
 # Como Compilar
 MacOS y Linux
->javac -cp ".:weka.jar" -c class src/RNA_AG.java
+>javac -cp ".:weka.jar" -d class src/*.java
 
 Windows
->javac -cp ".;weka.jar" -c class src/RNA_AG.java
+>javac -cp ".;weka.jar" -d class src/*.java
 
 #Como ejecutar
 MacOS y Linux
