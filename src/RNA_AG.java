@@ -46,7 +46,7 @@ public class RNA_AG {
         File file = new File(relativePath + "resultados" + poblN + "_gen" + gen + ".txt");
         FileWriter fw = new FileWriter(file, true);
         PrintWriter w = new PrintWriter(new BufferedWriter(fw));
-        
+
         w.println("||                               Resultado                                 ||");
         w.println("-----------------------------------------------------------------------------");
         w.print("|| RNA || ");
@@ -285,13 +285,14 @@ public class RNA_AG {
      * @throws Exception 
      */
     public static void evaluarPoblacion(String filename, int poblN, int gen) throws Exception{
+        String f = filename + poblN + "_gen" + gen;
         //Cargar poblacion
-        ArrayList<RNA> p = cargarPoblacion(filename + poblN + "_gen" + gen);
+        ArrayList<RNA> p = cargarPoblacion(f);
         if (!p.isEmpty()){
             //Evaluar poblacion
             evaluarPoblacion(p, poblN, gen);
             //Guardar poblacion
-            guardarPoblacion(filename, p);
+            guardarPoblacion(f, p);
         }
     }
     
