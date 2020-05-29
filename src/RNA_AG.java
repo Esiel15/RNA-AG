@@ -352,6 +352,6 @@ public class RNA_AG {
     public static void main(String[] args) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         System.out.println("Inicio de ejecucion: " + dateFormat.format(new Date()));
-        RNA_AG.evaluarPoblacion("poblacion", 1, 1); //Cambiale a ("poblacion", 2, n)
+        RNA_AG.evaluarPoblacion("poblacion", Integer.parseInt(args[0]), Integer.parseInt(args[1])); //Cambiale a ("poblacion", n, n)
     }
 }
