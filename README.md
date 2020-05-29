@@ -9,7 +9,7 @@ MacOS y Linux
 Windows
 >javac -cp ".;weka.jar" -d class src/*.java
 
-#Como ejecutar
+# Como ejecutar
 MacOS y Linux
 >java --add-opens=java.base/java.lang=ALL-UNNAMED -cp ".:weka.jar:class" RNA_AG
 
