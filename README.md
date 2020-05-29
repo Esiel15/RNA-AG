@@ -11,7 +11,9 @@ Windows
 
 # Como ejecutar
 MacOS y Linux
->java --add-opens=java.base/java.lang=ALL-UNNAMED -cp ".:weka.jar:class" RNA_AG
+n: representa el numero de archivo
+m: representa la generacion
+>java --add-opens=java.base/java.lang=ALL-UNNAMED -cp ".:weka.jar:class" RNA_AG n m
 
 Windows
->java --add-opens=java.base/java.lang=ALL-UNNAMED -cp ".;weka.jar;class" RNA_AG
+>java --add-opens=java.base/java.lang=ALL-UNNAMED -cp ".;weka.jar;class" RNA_AG n m
