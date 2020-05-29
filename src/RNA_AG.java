@@ -124,7 +124,7 @@ public class RNA_AG {
         try {
             br = new BufferedReader(new FileReader(relativePath + filename + ext));
             String l;
-            while ((l = br.readLine().trim()) != null){
+            while ((l = br.readLine()) != null){
                 if (!l.isEmpty()){
                     String[] rna = l.split(",");
                     poblacion.add(new RNA(Integer.parseInt(rna[0]), Double.parseDouble(rna[1])));
@@ -352,6 +352,6 @@ public class RNA_AG {
     public static void main(String[] args) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         System.out.println("Inicio de ejecucion: " + dateFormat.format(new Date()));
-        RNA_AG.evaluarPoblacion("poblacion", Integer.parseInt(args[0]), Integer.parseInt(args[1])); //Cambiale a ("poblacion", n, m)
+        RNA_AG.evaluarPoblacion("poblacion", Integer.parseInt(args[0]), Integer.parseInt(args[1])); //Cambiale a ("poblacion", 2, n)
     }
 }
