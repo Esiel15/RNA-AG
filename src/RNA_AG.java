@@ -65,13 +65,14 @@ public class RNA_AG {
      */
     private static void evaluarPoblacion(ArrayList<RNA> poblacion, int poblN, int gen) throws Exception {
         Instances instances = cargarInstancias("./10x10Forest.arff");
-        Evaluation evaluation = new Evaluation(instances);
-        MultilayerPerceptron mlp = new MultilayerPerceptron();
+        Evaluation evaluation;
+        MultilayerPerceptron mlp;
         
         //Configuracion de los parametros de la RNA
         for (RNA ind : poblacion){
             //Si no se ha realizado el experimento lo realiza
             if (ind.getResultado() == -1) {
+                mlp = new MultilayerPerceptron();
                 StringBuilder hl = new StringBuilder().append(ind.getNeuronas());
                 for (int i = 1, c = ind.getCapas(), n = ind.getNeuronas() ; i < c ; i++)
                     hl.append(",").append(n);
@@ -82,6 +83,7 @@ public class RNA_AG {
                 mlp.setMomentum(ind.getMomentum());
 
                 //Evaluacion del experimento
+                evaluation = new Evaluation(instances);
                 evaluation.crossValidateModel(mlp, instances, crossValidation, new Random(1));
 
                 //Modificar el resultado de la RNA dado en el experimento
