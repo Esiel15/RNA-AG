@@ -47,10 +47,6 @@ public class RNA_AG {
         FileWriter fw = new FileWriter(file, true);
         PrintWriter w = new PrintWriter(new BufferedWriter(fw));
         
-        if (!file.exists()){
-            w.println("||                              GENERACION " + gen + "                              ||");
-            w.println("-----------------------------------------------------------------------------");
-        }
         w.println("||                               Resultado                                 ||");
         w.println("-----------------------------------------------------------------------------");
         w.print("|| RNA || ");
