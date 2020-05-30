@@ -12,11 +12,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.Semaphore;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
 
+/**
+ *
+ * @author esielkar
+ * @author marcoderio
+ */
 public class RNA_AG {
     private static final int X1_MASK = 0b1111110000000;
     private static final int X2_MASK = 0b1111111;
@@ -58,40 +64,61 @@ public class RNA_AG {
     }
     
     /**
-     * Evalua todos los experimentos que no han sido evaluados o que tiene -1
-     * en su atributo resultado
+     * Evalua todos los experimentos que no han sido evaluados o que tiene -1 en su atributo resultado
+     * crea un nuevo Hilo por cada experimento a realizar
      * @param poblacion
      * @throws Exception 
      */
-    private static void evaluarPoblacion(ArrayList<RNA> poblacion, int poblN, int gen) throws Exception {
+    private static void evaluarPoblacion(ArrayList<RNA> poblacion, String filename, int poblN, int gen) throws Exception {
+        //Instancias
         Instances instances = cargarInstancias("./10x10Forest.arff");
-        Evaluation evaluation;
-        MultilayerPerceptron mlp;
+        //Semaforo de escritura de archivos
+        Semaphore s = new Semaphore(1);
         
         //Configuracion de los parametros de la RNA
         for (RNA ind : poblacion){
             //Si no se ha realizado el experimento lo realiza
             if (ind.getResultado() == -1) {
-                mlp = new MultilayerPerceptron();
-                StringBuilder hl = new StringBuilder().append(ind.getNeuronas());
-                for (int i = 1, c = ind.getCapas(), n = ind.getNeuronas() ; i < c ; i++)
-                    hl.append(",").append(n);
+                //Se crea un hilo que ejecutara el experimento
+                new Thread(new Runnable(){
+                    @Override
+                    public void run() {
+                        //System.out.println("SE INICIA");
+                        Evaluation evaluation;
+                        try {
+                            evaluation = new Evaluation(instances);
+                            MultilayerPerceptron mlp = new MultilayerPerceptron();
+                            
+                            StringBuilder hl = new StringBuilder().append(ind.getNeuronas());
+                            for (int i = 1, c = ind.getCapas(), n = ind.getNeuronas() ; i < c ; i++)
+                                hl.append(",").append(n);
 
-                mlp.setHiddenLayers(hl.toString());
-                mlp.setTrainingTime(ind.getEpocas());
-                mlp.setLearningRate(ind.getLearningRate());
-                mlp.setMomentum(ind.getMomentum());
-
-                //Evaluacion del experimento
-                evaluation = new Evaluation(instances);
-                evaluation.crossValidateModel(mlp, instances, crossValidation, new Random(1));
-
-                //Modificar el resultado de la RNA dado en el experimento
-                ind.setResultado(evaluation.pctCorrect());
-
-                guardarEvaluacion(evaluation, ind, poblN, gen);
-                DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-                System.out.println("Termino a las: " + dateFormat.format(new Date()));
+                            mlp.setHiddenLayers(hl.toString());
+                            mlp.setTrainingTime(ind.getEpocas());
+                            mlp.setLearningRate(ind.getLearningRate());
+                            mlp.setMomentum(ind.getMomentum());
+                            
+                            //Evaluacion del experimento en hilo
+                            evaluation.crossValidateModel(mlp, instances, crossValidation, new Random(1));
+                            
+                            //Modificar el resultado de la RNA dado en el experimento
+                            ind.setResultado(evaluation.pctCorrect());
+                            
+                            //Guarda toda la población de manera sincronizada (Se puede optimizar a solo el individuo)
+                            while (!s.tryAcquire());
+                            //System.out.println("ENTRA S: " + Thread.currentThread().getId());
+                            guardarPoblacion(filename, poblacion);
+                            guardarEvaluacion(evaluation, ind, poblN, gen);
+                            //System.out.println("SALE S: " + + Thread.currentThread().getId());
+                            s.release();
+                            DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                            System.out.println("Termino a las: " + dateFormat.format(new Date())); 
+                        } catch (Exception ex) {
+                            System.out.println("No se pudo realizar la evaluación");
+                            System.err.println(ex.getMessage());
+                        } 
+                    }
+                }).start();
             }
         }
     }
@@ -291,10 +318,8 @@ public class RNA_AG {
         //Cargar poblacion
         ArrayList<RNA> p = cargarPoblacion(f);
         if (!p.isEmpty()){
-            //Evaluar poblacion
-            evaluarPoblacion(p, poblN, gen);
-            //Guardar poblacion
-            guardarPoblacion(f, p);
+            //Evalua y guarda a la poblacion
+            evaluarPoblacion(p, f, poblN, gen);
         }
     }
     
@@ -347,7 +372,7 @@ public class RNA_AG {
                     desc.add(rna);
             }
         }
-        //Guarda la descendencia para ser evaluada con evaluarPoblacion()
+        //Guarda la descendencia para ser evaluada con
         guardarPoblacion(filename, desc, gen);
     }
     
