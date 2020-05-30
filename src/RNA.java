@@ -25,7 +25,7 @@ public class RNA implements Comparable<RNA>{
     }
 
     public void setRNA(int rna) {
-        this.rna = rna;
+        this.rna = rna & RNA_MASK;
     }
 
     public double getResultado() {
