@@ -219,7 +219,7 @@ public class RNA_AG {
      * @param rna RNA a la cual se le va a aplicar la mutacion
      * @return retorna la RNA ya mutada
      */
-    public static RNA generarMutacion(RNA rna, int changes){
+    private static RNA generarMutacion(RNA rna, int changes){
         RNA mut = new RNA(rna.getRNA());
         Random ram = new Random(System.currentTimeMillis());
         for (int i = 1, num ; i < changes ; i++){
@@ -231,7 +231,7 @@ public class RNA_AG {
                     case 2 : mut.setRNA(mut.getRNA() ^ 0b10000000);
                         break;
                 }
-            }else if (num <= 15){ //Neuronas 10%
+            }else if (num <= 25){ //Neuronas 20%
                 switch (ram.nextInt(4) + 1){
                     case 1 : mut.setRNA(mut.getRNA() ^ 0b1000000000000);
                         break;
@@ -242,7 +242,7 @@ public class RNA_AG {
                     case 4 : mut.setRNA(mut.getRNA() ^ 0b10000000000);
                         break;
                 }
-            }else if (num <= 30){ //Epocas 15%
+            }else if (num <= 40){ //Epocas 15%
                 switch (ram.nextInt(3) + 1){
                     case 1 : mut.setRNA(mut.getRNA() ^ 0b1000000);
                         break;
@@ -251,14 +251,14 @@ public class RNA_AG {
                     case 3 : mut.setRNA(mut.getRNA() ^ 0b10000);
                         break;
                 }
-            }else if (num <= 60){ //Momentum 30%
+            }else if (num <= 70){ //Momentum 30%
                 switch (ram.nextInt(2) + 1){
                     case 1 : mut.setRNA(mut.getRNA() ^ 0b10);
                         break;
                     case 2 : mut.setRNA(mut.getRNA() ^ 0b1);
                         break;
                 }
-            }else{ //Learning Rate 40%
+            }else{ //Learning Rate 30%
                 switch (ram.nextInt(2) + 1){
                     case 1 : mut.setRNA(mut.getRNA() ^ 0b1000);
                         break;
