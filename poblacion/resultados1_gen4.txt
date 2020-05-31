@@ -1,0 +1,180 @@
+||                               Resultado                                 ||
+-----------------------------------------------------------------------------
+|| RNA || Neuronas: 17 Capas: 1 Épocas: 1750 Learning Rate: 3.0 Momentum: 3.0
+
+Correctly Classified Instances       31031               89.9449 %
+Incorrectly Classified Instances      3469               10.0551 %
+Kappa statistic                          0.8196
+Mean absolute error                      0.0912
+Root mean squared error                  0.2252
+Relative absolute error                 24.4306 %
+Root relative squared error             52.1097 %
+Total Number of Instances            34500     
+
+Matriz de confusión
+     a     b     c   <-- classified as
+ 19379   768   381 |     a = N
+   961  3928   576 |     b = H
+   363   420  7724 |     c = I
+
+-----------------------------------------------------------------------------
+||                               Resultado                                 ||
+-----------------------------------------------------------------------------
+|| RNA || Neuronas: 17 Capas: 1 Épocas: 1750 Learning Rate: 3.0 Momentum: 3.5
+
+Correctly Classified Instances       31031               89.9449 %
+Incorrectly Classified Instances      3469               10.0551 %
+Kappa statistic                          0.8196
+Mean absolute error                      0.0912
+Root mean squared error                  0.2252
+Relative absolute error                 24.4306 %
+Root relative squared error             52.1097 %
+Total Number of Instances            34500     
+
+Matriz de confusión
+     a     b     c   <-- classified as
+ 19379   768   381 |     a = N
+   961  3928   576 |     b = H
+   363   420  7724 |     c = I
+
+-----------------------------------------------------------------------------
+||                               Resultado                                 ||
+-----------------------------------------------------------------------------
+|| RNA || Neuronas: 17 Capas: 1 Épocas: 2250 Learning Rate: 3.0 Momentum: 3.0
+
+Correctly Classified Instances       31029               89.9391 %
+Incorrectly Classified Instances      3471               10.0609 %
+Kappa statistic                          0.8195
+Mean absolute error                      0.0908
+Root mean squared error                  0.225 
+Relative absolute error                 24.3288 %
+Root relative squared error             52.0823 %
+Total Number of Instances            34500     
+
+Matriz de confusión
+     a     b     c   <-- classified as
+ 19377   769   382 |     a = N
+   958  3930   577 |     b = H
+   372   413  7722 |     c = I
+
+-----------------------------------------------------------------------------
+||                               Resultado                                 ||
+-----------------------------------------------------------------------------
+|| RNA || Neuronas: 18 Capas: 1 Épocas: 2250 Learning Rate: 3.0 Momentum: 2.0
+
+Correctly Classified Instances       31057               90.0203 %
+Incorrectly Classified Instances      3443                9.9797 %
+Kappa statistic                          0.8215
+Mean absolute error                      0.0898
+Root mean squared error                  0.2246
+Relative absolute error                 24.0376 %
+Root relative squared error             51.9917 %
+Total Number of Instances            34500     
+
+Matriz de confusión
+     a     b     c   <-- classified as
+ 19328   812   388 |     a = N
+   878  3985   602 |     b = H
+   348   415  7744 |     c = I
+
+-----------------------------------------------------------------------------
+||                               Resultado                                 ||
+-----------------------------------------------------------------------------
+|| RNA || Neuronas: 18 Capas: 1 Épocas: 750 Learning Rate: 3.5 Momentum: 2.0
+
+Correctly Classified Instances       31037               89.9623 %
+Incorrectly Classified Instances      3463               10.0377 %
+Kappa statistic                          0.8204
+Mean absolute error                      0.0913
+Root mean squared error                  0.2247
+Relative absolute error                 24.4517 %
+Root relative squared error             52.0129 %
+Total Number of Instances            34500     
+
+Matriz de confusión
+     a     b     c   <-- classified as
+ 19329   812   387 |     a = N
+   890  3959   616 |     b = H
+   347   411  7749 |     c = I
+
+-----------------------------------------------------------------------------
+||                               Resultado                                 ||
+-----------------------------------------------------------------------------
+|| RNA || Neuronas: 17 Capas: 1 Épocas: 1250 Learning Rate: 2.5 Momentum: 2.5
+
+Correctly Classified Instances       31013               89.8928 %
+Incorrectly Classified Instances      3487               10.1072 %
+Kappa statistic                          0.8187
+Mean absolute error                      0.0914
+Root mean squared error                  0.2251
+Relative absolute error                 24.4905 %
+Root relative squared error             52.0974 %
+Total Number of Instances            34500     
+
+Matriz de confusión
+     a     b     c   <-- classified as
+ 19368   779   381 |     a = N
+   962  3919   584 |     b = H
+   364   417  7726 |     c = I
+
+-----------------------------------------------------------------------------
+||                               Resultado                                 ||
+-----------------------------------------------------------------------------
+|| RNA || Neuronas: 18 Capas: 1 Épocas: 1750 Learning Rate: 3.5 Momentum: 2.5
+
+Correctly Classified Instances       31075               90.0725 %
+Incorrectly Classified Instances      3425                9.9275 %
+Kappa statistic                          0.8225
+Mean absolute error                      0.0899
+Root mean squared error                  0.2242
+Relative absolute error                 24.0863 %
+Root relative squared error             51.8975 %
+Total Number of Instances            34500     
+
+Matriz de confusión
+     a     b     c   <-- classified as
+ 19325   813   390 |     a = N
+   859  4001   605 |     b = H
+   345   413  7749 |     c = I
+
+-----------------------------------------------------------------------------
+||                               Resultado                                 ||
+-----------------------------------------------------------------------------
+|| RNA || Neuronas: 18 Capas: 1 Épocas: 1750 Learning Rate: 3.0 Momentum: 2.0
+
+Correctly Classified Instances       31075               90.0725 %
+Incorrectly Classified Instances      3425                9.9275 %
+Kappa statistic                          0.8225
+Mean absolute error                      0.0899
+Root mean squared error                  0.2242
+Relative absolute error                 24.0863 %
+Root relative squared error             51.8975 %
+Total Number of Instances            34500     
+
+Matriz de confusión
+     a     b     c   <-- classified as
+ 19325   813   390 |     a = N
+   859  4001   605 |     b = H
+   345   413  7749 |     c = I
+
+-----------------------------------------------------------------------------
+||                               Resultado                                 ||
+-----------------------------------------------------------------------------
+|| RNA || Neuronas: 17 Capas: 1 Épocas: 750 Learning Rate: 2.5 Momentum: 2.5
+
+Correctly Classified Instances       31015               89.8986 %
+Incorrectly Classified Instances      3485               10.1014 %
+Kappa statistic                          0.819 
+Mean absolute error                      0.0926
+Root mean squared error                  0.2252
+Relative absolute error                 24.8065 %
+Root relative squared error             52.1188 %
+Total Number of Instances            34500     
+
+Matriz de confusión
+     a     b     c   <-- classified as
+ 19345   792   391 |     a = N
+   926  3931   608 |     b = H
+   357   411  7739 |     c = I
+
+-----------------------------------------------------------------------------
