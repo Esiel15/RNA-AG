@@ -239,7 +239,7 @@ public class RNA_AG {
                         break;
                     case 3 : mut.setRNA(mut.getRNA() ^ 0b10000000000);
                         break;
-                    case 4 : mut.setRNA(mut.getRNA() ^ 0b10000000000);
+                    case 4 : mut.setRNA(mut.getRNA() ^ 0b1000000000);
                         break;
                 }
             }else if (num <= 40){ //Epocas 15%
