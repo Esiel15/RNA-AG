@@ -379,6 +379,15 @@ public class RNA_AG {
     public static void main(String[] args) throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         System.out.println("Inicio de ejecucion: " + dateFormat.format(new Date()));
-        RNA_AG.evaluarPoblacion("poblacion", Integer.parseInt(args[0]), Integer.parseInt(args[1])); //Cambiale a ("poblacion", 2, n)
+        
+        //Algoritmo Genético Básico  (La condición de paro son 10 generaciones)
+        primerPoblacion("poblacion");
+        for (int i = 1 ; i <= 10 ; i++) {
+            evaluarPoblacion("poblacion", 1, i);
+            evaluarPoblacion("poblacion", 2, i);
+            unirPoblaciones("poblacion", i);
+            if (i < 10)
+                Alg_Gen("poblacion", i+1);
+        }
     }
 }
